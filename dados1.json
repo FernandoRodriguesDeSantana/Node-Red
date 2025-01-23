@@ -1,0 +1,115 @@
+[
+    {
+        "id": "29fc97e9fe771ced",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7c90b2683cdcdc0d",
+        "type": "file in",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "filename": "C:\\Users\\fre\\Desktop\\log.txt",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 320,
+        "y": 40,
+        "wires": [
+            [
+                "1a78f37429a51ed1"
+            ]
+        ]
+    },
+    {
+        "id": "3d4f07b678b9710c",
+        "type": "inject",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 40,
+        "wires": [
+            [
+                "7c90b2683cdcdc0d"
+            ]
+        ]
+    },
+    {
+        "id": "1a78f37429a51ed1",
+        "type": "split",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "splt": ",",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 510,
+        "y": 40,
+        "wires": [
+            [
+                "523cf9205c5a6111"
+            ]
+        ]
+    },
+    {
+        "id": "523cf9205c5a6111",
+        "type": "function",
+        "z": "29fc97e9fe771ced",
+        "name": "function 1",
+        "func": "let timestamp = [];\nlet machine_id = [];\nlet temperature = [];\nlet pressure = [];\nlet status = [];\n\nfunction addElement(array, element){\n    array.push(element);\n}\n\naddElement(timestamp, msg.payload);\naddElement(machine_id, msg.payload);\naddElement(temperature, msg.payload);\naddElement(pressure, msg.payload);\naddElement(status, msg.payload);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 40,
+        "wires": [
+            [
+                "b8f73987dba29df3"
+            ]
+        ]
+    },
+    {
+        "id": "b8f73987dba29df3",
+        "type": "debug",
+        "z": "29fc97e9fe771ced",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 40,
+        "wires": []
+    }
+]

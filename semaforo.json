@@ -1,0 +1,207 @@
+[
+    {
+        "id": "5a54ee6054807743",
+        "type": "tab",
+        "label": "Semáforo",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "84e5d61b56df8bcc",
+        "type": "group",
+        "z": "5a54ee6054807743",
+        "name": "Relógio",
+        "style": {
+            "label": true,
+            "fill": "#bfbfbf",
+            "fill-opacity": "0.7",
+            "color": "#000000"
+        },
+        "nodes": [
+            "14a773791fe4103e",
+            "a4ba723b26987065",
+            "16e02e9c2b66e36e"
+        ],
+        "x": 114,
+        "y": 159,
+        "w": 352,
+        "h": 122
+    },
+    {
+        "id": "14a773791fe4103e",
+        "type": "inject",
+        "z": "5a54ee6054807743",
+        "g": "84e5d61b56df8bcc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 210,
+        "y": 200,
+        "wires": [
+            [
+                "a4ba723b26987065"
+            ]
+        ]
+    },
+    {
+        "id": "a4ba723b26987065",
+        "type": "function",
+        "z": "5a54ee6054807743",
+        "g": "84e5d61b56df8bcc",
+        "name": "function 5",
+        "func": "let counter = flow.get('counter') || 0;\nlet cicle = flow.get('cicle') || 0;\n\nif (msg.payload === 'reset') {\n    counter = 0;\n    cicle = 0;\n}\nelse if(counter === 5){\n    counter = 0;\n    cicle++;\n}\nelse if((cicle === 1) && (counter === 3)){\n    counter = 0;\n    cicle++;\n}\n\ncounter++;\n\nflow.set('counter', counter);\nflow.set('cicle', cicle);\n\nmsg.payload = {counter: counter, cicle: cicle};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 220,
+        "wires": [
+            [
+                "cb5a3f8439d3e0a0",
+                "9fbfe3bdeb9d405a"
+            ]
+        ]
+    },
+    {
+        "id": "16e02e9c2b66e36e",
+        "type": "inject",
+        "z": "5a54ee6054807743",
+        "g": "84e5d61b56df8bcc",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "reset",
+        "payloadType": "str",
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "a4ba723b26987065"
+            ]
+        ]
+    },
+    {
+        "id": "cb5a3f8439d3e0a0",
+        "type": "function",
+        "z": "5a54ee6054807743",
+        "name": "function 4",
+        "func": "let counter = msg.payload.counter;\nlet cicle = msg.payload.cicle;\nlet red = { payload: 'red' };\nlet yellow = { payload: 'yellow' };\nlet green = { payload: 'green' };\nlet reset = {payload: 'reset'};\n\nswitch(cicle){\n    case 0:\n        return [red, null, null, null];\n        break;\n\n    case 1:\n        return [null, yellow, null, null];\n        break;\n    \n    case 2:\n        return [null, null, green, null];\n        break;\n\n    case 3:\n        return [null, null, null, reset];\n        break;\n}",
+        "outputs": 4,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 200,
+        "wires": [
+            [
+                "854f159cbd178094"
+            ],
+            [
+                "605e75542aa3a0e5"
+            ],
+            [
+                "674345e2622866ab"
+            ],
+            [
+                "a4ba723b26987065"
+            ]
+        ]
+    },
+    {
+        "id": "854f159cbd178094",
+        "type": "debug",
+        "z": "5a54ee6054807743",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "605e75542aa3a0e5",
+        "type": "debug",
+        "z": "5a54ee6054807743",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "674345e2622866ab",
+        "type": "debug",
+        "z": "5a54ee6054807743",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9fbfe3bdeb9d405a",
+        "type": "debug",
+        "z": "5a54ee6054807743",
+        "name": "debug 4",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 20,
+        "wires": []
+    }
+]

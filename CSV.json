@@ -1,0 +1,313 @@
+[
+    {
+        "id": "29fc97e9fe771ced",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7c90b2683cdcdc0d",
+        "type": "file in",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "filename": "C:\\Users\\fre\\Desktop\\log.txt",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 320,
+        "y": 80,
+        "wires": [
+            [
+                "a5b22e3ff7c0d889"
+            ]
+        ]
+    },
+    {
+        "id": "3d4f07b678b9710c",
+        "type": "inject",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 80,
+        "wires": [
+            [
+                "7c90b2683cdcdc0d"
+            ]
+        ]
+    },
+    {
+        "id": "a5b22e3ff7c0d889",
+        "type": "function",
+        "z": "29fc97e9fe771ced",
+        "name": "SPLIT (\\n)",
+        "func": "let rows = msg.payload.split(\"\\n\");\n\nflow.set(\"rows\", rows);\n\nmsg.payload = rows;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 80,
+        "wires": [
+            [
+                "66d8dfacc1ed699d"
+            ]
+        ]
+    },
+    {
+        "id": "d19c0770c9510b22",
+        "type": "debug",
+        "z": "29fc97e9fe771ced",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "66d8dfacc1ed699d",
+        "type": "function",
+        "z": "29fc97e9fe771ced",
+        "name": "SPLIT (,)",
+        "func": "let rows = flow.get(\"rows\") || [];\n\nlet columns = rows.map(line => line.split(\",\"));\n\nmsg.payload = columns;\n\nflow.set(\"matrix\", columns);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 80,
+        "wires": [
+            [
+                "1f0a21385a1fe62c"
+            ]
+        ]
+    },
+    {
+        "id": "1f0a21385a1fe62c",
+        "type": "function",
+        "z": "29fc97e9fe771ced",
+        "name": "OBJECT",
+        "func": "let matrix = flow.get(\"matrix\") || [];\n\nlet machinesData = {};\nlet numRows = matrix.length;\nlet numColumns = matrix.length > 0 ? matrix[0].length : 0;\n\nfor(let i = 1; i < numRows; i++){\n    let row = matrix[i];\n\n    let machine_id = row[1];\n\n    let data = {\n        \"timestamp\": row[0],\n        \"temperature\": row[2],\n        \"pressure\": row[3],\n        \"status\": row[4]\n    };\n\n    if (!machinesData[machine_id]) {\n        machinesData[machine_id] = [];\n    }\n\n    machinesData[machine_id].push(data);\n}\n\nlet machine001Data = machinesData[\"MACHINE_001\"] || [];\nlet machine002Data = machinesData[\"MACHINE_002\"] || [];\nlet machine003Data = machinesData[\"MACHINE_003\"] || [];\n\nglobal.set(\"Machine001Data\", machine001Data);\nglobal.set(\"Machine002Data\", machine002Data);\nglobal.set(\"Machine003Data\", machine003Data);\n\nmsg.payload = machinesData;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 80,
+        "wires": [
+            [
+                "d19c0770c9510b22"
+            ]
+        ]
+    },
+    {
+        "id": "f10ef36a4e9eb316",
+        "type": "inject",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 220,
+        "wires": [
+            [
+                "9f8528df5bbe414d",
+                "5ceb55f47e949f64"
+            ]
+        ]
+    },
+    {
+        "id": "9f8528df5bbe414d",
+        "type": "function",
+        "z": "29fc97e9fe771ced",
+        "name": "function 1",
+        "func": "let machine001 = global.get(\"Machine001Data\");\n\nlet temperature = machine001.map(entry => entry.temperature);\nlet pressure = machine001.map(entry => entry.pressure);\nlet status = machine001.map(entry => entry.status);\n\nlet database = {\n    \"labels\": machine001.map(entry => new Date(entry.timestamp).toLocaleTimeString()), \n    \"series\": ['Temperature'],  \n    \"data\": [\n        temperature  \n    ]\n};\n\nmsg.payload = [database];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 220,
+        "wires": [
+            [
+                "9b58867d2cd56266"
+            ]
+        ]
+    },
+    {
+        "id": "9b58867d2cd56266",
+        "type": "ui_chart",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "group": "fdc55d725303be74",
+        "order": 0,
+        "width": "6",
+        "height": "6",
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 450,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c8c62ef72737ab2b",
+        "type": "ui_chart",
+        "z": "29fc97e9fe771ced",
+        "name": "",
+        "group": "fdc55d725303be74",
+        "order": 0,
+        "width": "6",
+        "height": "6",
+        "label": "Pressure",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "200",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff8214",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 440,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5ceb55f47e949f64",
+        "type": "function",
+        "z": "29fc97e9fe771ced",
+        "name": "function 2",
+        "func": "let machine001 = global.get(\"Machine001Data\");\n\nlet temperature = machine001.map(entry => entry.temperature);\nlet pressure = machine001.map(entry => entry.pressure);\nlet status = machine001.map(entry => entry.status);\n\nlet database = {\n    \"labels\": machine001.map(entry => new Date(entry.timestamp).toLocaleTimeString()), \n    \"series\": ['Pressure'],  \n    \"data\": [\n        pressure  \n    ]\n};\n\nmsg.payload = [database];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 260,
+        "wires": [
+            [
+                "c8c62ef72737ab2b"
+            ]
+        ]
+    },
+    {
+        "id": "fdc55d725303be74",
+        "type": "ui_group",
+        "name": "Machine 001",
+        "tab": "5b7242520e46f5d6",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5b7242520e46f5d6",
+        "type": "ui_tab",
+        "name": "Machine's Parameters",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]

@@ -1,0 +1,425 @@
+[
+    {
+        "id": "c06a11c501328964",
+        "type": "tab",
+        "label": "Painel Carro",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6257ee6fe9bf50f5",
+        "type": "ui_button",
+        "z": "c06a11c501328964",
+        "name": "",
+        "group": "99813d9c182a914a",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Javascript",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "Javascript",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "a8a7093d2289e404"
+            ]
+        ]
+    },
+    {
+        "id": "a32ebeef85a0ea3c",
+        "type": "ui_button",
+        "z": "c06a11c501328964",
+        "name": "",
+        "group": "99813d9c182a914a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Node-Red",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "Node-Red",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "a8a7093d2289e404"
+            ]
+        ]
+    },
+    {
+        "id": "a8a7093d2289e404",
+        "type": "ui_text",
+        "z": "c06a11c501328964",
+        "group": "99813d9c182a914a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Seleção:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 660,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "7a695ad98b239f2e",
+        "type": "ui_text_input",
+        "z": "c06a11c501328964",
+        "name": "",
+        "label": "Digite um curso",
+        "tooltip": "",
+        "group": "99813d9c182a914a",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": "0",
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 360,
+        "y": 320,
+        "wires": [
+            [
+                "a8a7093d2289e404"
+            ]
+        ]
+    },
+    {
+        "id": "baa7de80b627943d",
+        "type": "ui_button",
+        "z": "c06a11c501328964",
+        "name": "",
+        "group": "99813d9c182a914a",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Pesquisar",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "payload",
+        "payloadType": "flow",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "7a695ad98b239f2e"
+            ]
+        ]
+    },
+    {
+        "id": "f6faf889d6344b67",
+        "type": "ui_gauge",
+        "z": "c06a11c501328964",
+        "name": "",
+        "group": "b050014ce60940c7",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Velocímetro",
+        "label": "km/h",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "200",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 930,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "879810e799c12994",
+        "type": "ui_slider",
+        "z": "c06a11c501328964",
+        "name": "acelerador",
+        "label": "Acelerador",
+        "tooltip": "",
+        "group": "b050014ce60940c7",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "outs": "all",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": "200",
+        "step": 1,
+        "className": "",
+        "x": 570,
+        "y": 580,
+        "wires": [
+            [
+                "867c67390bdb3135"
+            ]
+        ]
+    },
+    {
+        "id": "536ae0ac140bc584",
+        "type": "ui_gauge",
+        "z": "c06a11c501328964",
+        "name": "",
+        "group": "3bd36eaf102fa309",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Freio",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": 10,
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 910,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "e4f9ca396bb56d1f",
+        "type": "ui_slider",
+        "z": "c06a11c501328964",
+        "name": "freio",
+        "label": "Freio",
+        "tooltip": "",
+        "group": "3bd36eaf102fa309",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "all",
+        "topic": "topic",
+        "topicType": "msg",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "className": "",
+        "x": 550,
+        "y": 740,
+        "wires": [
+            [
+                "d81a5157483c7092"
+            ]
+        ]
+    },
+    {
+        "id": "f893bdb956c2980d",
+        "type": "ui_switch",
+        "z": "c06a11c501328964",
+        "name": "chave",
+        "label": "Chave",
+        "tooltip": "",
+        "group": "ac7803ce02ad148f",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 150,
+        "y": 660,
+        "wires": [
+            [
+                "7dbfeea6545752ad"
+            ]
+        ]
+    },
+    {
+        "id": "7dbfeea6545752ad",
+        "type": "change",
+        "z": "c06a11c501328964",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "estadoBotao",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 340,
+        "y": 660,
+        "wires": [
+            [
+                "879810e799c12994",
+                "e4f9ca396bb56d1f"
+            ]
+        ]
+    },
+    {
+        "id": "867c67390bdb3135",
+        "type": "function",
+        "z": "c06a11c501328964",
+        "name": "function 1",
+        "func": "let estadoBotao = flow.get(\"estadoBotao\");\n\nif (estadoBotao === true) {\n    return msg;\n}\nelse if (estadoBotao === false) {\n    return 0;\n}\nelse {\n    return 0;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 580,
+        "wires": [
+            [
+                "f6faf889d6344b67"
+            ]
+        ]
+    },
+    {
+        "id": "d81a5157483c7092",
+        "type": "function",
+        "z": "c06a11c501328964",
+        "name": "function 3",
+        "func": "let estadoBotao = flow.get(\"estadoBotao\");\n\nif(estadoBotao === true){\n    return msg;\n}\nelse if(estadoBotao === false){\n    return 0;\n}\nelse{\n    return 0;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 740,
+        "wires": [
+            [
+                "536ae0ac140bc584"
+            ]
+        ]
+    },
+    {
+        "id": "c2a074000b48c52a",
+        "type": "ui_spacer",
+        "z": "c06a11c501328964",
+        "name": "spacer",
+        "group": "e5a7ebba388546c4",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "99813d9c182a914a",
+        "type": "ui_group",
+        "name": "Cursos",
+        "tab": "d38d521c1399bad2",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b050014ce60940c7",
+        "type": "ui_group",
+        "name": "Gráfico 1",
+        "tab": "37c1e06eafda2e4d",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3bd36eaf102fa309",
+        "type": "ui_group",
+        "name": "Gráfico 2",
+        "tab": "37c1e06eafda2e4d",
+        "order": 3,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ac7803ce02ad148f",
+        "type": "ui_group",
+        "name": "Energia",
+        "tab": "37c1e06eafda2e4d",
+        "order": 1,
+        "disp": true,
+        "width": "3",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d38d521c1399bad2",
+        "type": "ui_tab",
+        "name": "Guia Principal",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "37c1e06eafda2e4d",
+        "type": "ui_tab",
+        "name": "Gráficos",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]
