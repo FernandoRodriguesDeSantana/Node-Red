@@ -1,0 +1,115 @@
+[
+    {
+        "id": "b6862364b4605fb2",
+        "type": "tab",
+        "label": "tratamentoDados",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "158804501fc2fbab",
+        "type": "inject",
+        "z": "b6862364b4605fb2",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "7dcee44d42f77b35"
+            ]
+        ]
+    },
+    {
+        "id": "7dcee44d42f77b35",
+        "type": "file in",
+        "z": "b6862364b4605fb2",
+        "name": "",
+        "filename": "C:\\Users\\fre\\Downloads\\log_anomalias.txt",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 380,
+        "y": 80,
+        "wires": [
+            [
+                "faca7b76e60883cd"
+            ]
+        ]
+    },
+    {
+        "id": "9b88447495114057",
+        "type": "debug",
+        "z": "b6862364b4605fb2",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "072f49a809d01e6f",
+        "type": "function",
+        "z": "b6862364b4605fb2",
+        "name": "function 3",
+        "func": "// Acessa as variáveis globais (inicializa com null caso não existam ainda)\nlet temperatura = global.get('temperatura') || null;\nlet umidade = global.get('umidade') || null;\nlet pressao = global.get('pressao') || null;\nlet status = global.get('status') || null;\nlet anomalia = global.get('anomalia') || null;\n\n// Expressão regular para filtrar os dados\nlet regex = /^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z)\\s\\|\\sTemperatura:\\s([\\d\\.\\-]+|null)°C\\s\\|\\sUmidade:\\s([\\d\\.\\-]+|null)%\\s\\|\\sPressão:\\s([\\d\\.\\-]+|null)\\sbar\\s\\|\\sStatus:\\s(.+)$/;\n\n// Filtra a linha do log para obter os valores com regex\nlet match = msg.payload.match(regex);\n\nif (!match) {\n    msg.payload = { erro: \"Linha corrompida ou formato inválido\", linha: msg.payload };\n    return msg; // Se o log não corresponder ao formato, retorna erro\n}\n\n// Extrair valores e tratar os \"null\"\nlet timestamp = match[1];\nlet novaTemperatura = match[2] === \"null\" ? null : parseFloat(match[2]);\nlet novaUmidade = match[3] === \"null\" ? null : parseFloat(match[3]);\nlet novaPressao = match[4] === \"null\" ? null : parseFloat(match[4]);\nlet novoStatus = match[5];\n\n// Verificação de anomalias\nif (novaTemperatura === null || novaPressao === null || novaUmidade === null) {\n    anomalia = \"Erro: Sensor com falha\";\n} else if (novaTemperatura > 100) {\n    anomalia = \"Alerta: Superaquecimento\";\n} else if (novaTemperatura < -10) {\n    anomalia = \"Erro: Temperatura impossível\";\n} else if (novaPressao < 0) {\n    anomalia = \"Erro: Pressão negativa\";\n} else if (novaUmidade > 100) {\n    anomalia = \"Erro: Umidade inconsistente\";\n} else {\n    // Se os dados estiverem válidos, armazena nas variáveis globais\n    temperatura = novaTemperatura;\n    umidade = novaUmidade;\n    pressao = novaPressao;\n    status = novoStatus;\n    anomalia = null;  // Nenhuma anomalia se tudo estiver OK\n}\n\n// Atualiza as variáveis globais com os novos valores\nglobal.set('temperatura', temperatura);\nglobal.set('umidade', umidade);\nglobal.set('pressao', pressao);\nglobal.set('status', status);\nglobal.set('anomalia', anomalia);\n\n// Adiciona os resultados e anomalias ao payload\nmsg.payload = {\n    timestamp: timestamp,\n    temperatura: temperatura,\n    umidade: umidade,\n    pressao: pressao,\n    status: status,\n    anomalia: anomalia\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 80,
+        "wires": [
+            [
+                "9b88447495114057"
+            ]
+        ]
+    },
+    {
+        "id": "faca7b76e60883cd",
+        "type": "split",
+        "z": "b6862364b4605fb2",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 630,
+        "y": 80,
+        "wires": [
+            [
+                "072f49a809d01e6f"
+            ]
+        ]
+    }
+]
