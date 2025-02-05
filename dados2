@@ -1,0 +1,115 @@
+[
+    {
+        "id": "941b75ef0939d9c0",
+        "type": "tab",
+        "label": "Flow 6",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fcea5922e48762a8",
+        "type": "inject",
+        "z": "941b75ef0939d9c0",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 480,
+        "y": 240,
+        "wires": [
+            [
+                "34e9b4cfb7c8364b"
+            ]
+        ]
+    },
+    {
+        "id": "34e9b4cfb7c8364b",
+        "type": "file in",
+        "z": "941b75ef0939d9c0",
+        "name": "",
+        "filename": "C:\\Users\\fre\\Desktop\\log_complexo.txt",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 730,
+        "y": 240,
+        "wires": [
+            [
+                "df8d137618c706de"
+            ]
+        ]
+    },
+    {
+        "id": "8b5507bd7455f83f",
+        "type": "debug",
+        "z": "941b75ef0939d9c0",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "79b63541a689817c",
+        "type": "function",
+        "z": "941b75ef0939d9c0",
+        "name": "function 4",
+        "func": "// ACESSO DAS VARIÁVEIS GLOBAIS\nlet temperatura = global.get('temperatura') || null;\nlet umidade = global.get('umidade') || null;\nlet pressao = global.get('pressao') || null;\nlet status = global.get('status') || null;\nlet anomalia = global.get('anomalia') || null;\n\n// REMOVER ESPAÇOS EXTRAS DA LINHA\nlet linha = msg.payload.replace(/\\r/g, \"\").trim();\n\n// REGEX PARA FILTRAR DADOS\nlet regex = /^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z)\\s*\\|\\s*Temperatura:\\s*(-?\\d+(?:\\.\\d+)?|null)°C\\s*\\|\\s*Umidade:\\s*(\\d+(?:\\.\\d+)?|null)%\\s*\\|\\s*Pressão:\\s*(\\d+(?:\\.\\d+)?|null)\\s*bar\\s*\\|\\s*Status:\\s*(.+)$/;\n\n// TENTAR CASAR COM A REGEX\nlet match = linha.match(regex);\n\n// SE A REGEX NÃO CASAR, ENVIAR ERRO\nif (!match) {\n    node.warn(\"Linha não corresponde à regex: \" + linha);\n    msg.payload = { erro: \"Formato inválido\", linha: linha };\n    return msg;\n}\n\n// PARAMETRIZAR VALORES E TRATAR \"NULL\"\nlet timestamp = match[1];\nlet novaTemperatura = match[2] === \"null\" ? null : parseFloat(match[2]);\nlet novaUmidade = match[3] === \"null\" ? null : parseFloat(match[3]);\nlet novaPressao = match[4] === \"null\" ? null : parseFloat(match[4]);\nlet novoStatus = match[5];\n\n// VERIFICAÇÃO DE ANOMALIAS\nif (novaTemperatura === null || novaUmidade === null || novaPressao === null) {\n    anomalia = \"ERRO: sensor com falha\";\n} else if (novaTemperatura > 35) {\n    anomalia = \"ERRO: superaquecimento\";\n} else if (novaTemperatura < 0) {\n    anomalia = \"ERRO: temperatura impossível\";\n} else if (novaPressao < 0) {\n    anomalia = \"ERRO: pressão negativa\";\n} else if (novaUmidade > 100) {\n    anomalia = \"ERRO: umidade inconsistente\";\n} else {\n    anomalia = null;\n}\n\n// ATUALIZA AS VARIÁVEIS GLOBAIS\nglobal.set('temperatura', novaTemperatura);\nglobal.set('umidade', novaUmidade);\nglobal.set('pressao', novaPressao);\nglobal.set('status', novoStatus);\nglobal.set('anomalia', anomalia);\n\n// RETORNA OS DADOS FORMATADOS\nmsg.payload = {\n    timestamp: timestamp,\n    temperatura: novaTemperatura,\n    umidade: novaUmidade,\n    pressao: novaPressao,\n    status: novoStatus,\n    anomalia: anomalia\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1120,
+        "y": 240,
+        "wires": [
+            [
+                "8b5507bd7455f83f"
+            ]
+        ]
+    },
+    {
+        "id": "df8d137618c706de",
+        "type": "split",
+        "z": "941b75ef0939d9c0",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "property": "payload",
+        "x": 970,
+        "y": 240,
+        "wires": [
+            [
+                "79b63541a689817c"
+            ]
+        ]
+    }
+]
